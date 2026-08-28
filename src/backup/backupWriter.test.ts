@@ -77,6 +77,19 @@ describe("connectBackupFolder", () => {
     expect(setSetting).toHaveBeenCalledWith(db, "backupDirectoryHandle", directoryHandle);
     expect(deleteSetting).toHaveBeenCalledWith(db, "lastBackupError");
   });
+
+  it("does nothing when the user cancels the folder picker", async () => {
+    const abortError = new Error("The user aborted a request.");
+    abortError.name = "AbortError";
+    (window as any).showDirectoryPicker = vi.fn(async () => {
+      throw abortError;
+    });
+
+    await expect(connectBackupFolder(db)).resolves.toBeUndefined();
+
+    expect(setSetting).not.toHaveBeenCalled();
+    expect(deleteSetting).not.toHaveBeenCalled();
+  });
 });
 
 describe("writeBackup", () => {

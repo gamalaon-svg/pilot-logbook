@@ -10,7 +10,15 @@ export function isBackupSupported(): boolean {
 }
 
 export async function connectBackupFolder(db: LogbookDatabase): Promise<void> {
-  const handle = await window.showDirectoryPicker({ mode: "readwrite" });
+  let handle: FileSystemDirectoryHandle;
+  try {
+    handle = await window.showDirectoryPicker({ mode: "readwrite" });
+  } catch (err) {
+    if ((err as Error).name === "AbortError") {
+      return;
+    }
+    throw err;
+  }
   await setSetting(db, "backupDirectoryHandle", handle);
   await deleteSetting(db, "lastBackupError");
 }
