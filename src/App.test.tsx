@@ -28,4 +28,10 @@ describe("App", () => {
     expect(await screen.findByText("OMDB")).toBeInTheDocument();
     expect(screen.getByText("By aircraft type")).toBeInTheDocument();
   });
+
+  it("shows the backup section with a restore control", async () => {
+    render(<App />);
+    expect(await screen.findByText("Backup")).toBeInTheDocument();
+    expect(screen.getByLabelText(/restore from backup/i)).toBeInTheDocument();
+  });
 });
