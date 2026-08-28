@@ -4,9 +4,11 @@ import userEvent from "@testing-library/user-event";
 import App from "./App";
 
 describe("App", () => {
-  it("adds a flight entry and shows it in the list and totals", async () => {
+  it("adds a flight entry via the Add Flight panel and shows it in the list", async () => {
     const user = userEvent.setup();
     render(<App />);
+
+    await user.click(screen.getByRole("button", { name: /add flight/i }));
 
     await user.type(screen.getByLabelText(/date/i), "2026-08-20");
     await user.type(screen.getByLabelText(/departure/i), "OMDB");
@@ -26,12 +28,20 @@ describe("App", () => {
     await user.click(screen.getByRole("button", { name: /save/i }));
 
     expect(await screen.findByText("OMDB")).toBeInTheDocument();
-    expect(screen.getByText("By aircraft type")).toBeInTheDocument();
+    expect(screen.queryByLabelText(/^date$/i)).not.toBeInTheDocument();
   });
 
-  it("shows the backup section with a restore control", async () => {
+  it("switches to the Totals view", async () => {
+    const user = userEvent.setup();
     render(<App />);
-    expect(await screen.findByText("Backup")).toBeInTheDocument();
-    expect(screen.getByLabelText(/restore from backup/i)).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Totals" }));
+    expect(await screen.findByText("By aircraft type")).toBeInTheDocument();
+  });
+
+  it("switches to the Backup view", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByRole("button", { name: "Backup" }));
+    expect(await screen.findByLabelText(/restore from backup/i)).toBeInTheDocument();
   });
 });

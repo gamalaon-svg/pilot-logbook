@@ -5,6 +5,8 @@ import { FlightEntryForm } from "./components/FlightEntryForm";
 import { FlightEntryList } from "./components/FlightEntryList";
 import { TotalsSummary } from "./components/TotalsSummary";
 import { BackupSettings } from "./components/BackupSettings";
+import { Sidebar, type ViewName } from "./components/Sidebar";
+import { StatCards } from "./components/StatCards";
 import { connectBackupFolder, getBackupStatus, writeBackup, type BackupStatus } from "./backup/backupWriter";
 import { readAndParseBackupFile, replaceAllFlightEntries } from "./backup/restore";
 import type { FlightEntry } from "./types/flightEntry";
@@ -14,6 +16,8 @@ const INITIAL_BACKUP_STATUS: BackupStatus = { supported: false, connected: false
 export default function App() {
   const [entries, setEntries] = useState<FlightEntry[]>([]);
   const [editingEntry, setEditingEntry] = useState<FlightEntry | undefined>(undefined);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [activeView, setActiveView] = useState<ViewName>("logbook");
   const [backupStatus, setBackupStatus] = useState<BackupStatus>(INITIAL_BACKUP_STATUS);
 
   async function reload() {
@@ -34,13 +38,29 @@ export default function App() {
     await refreshBackupStatus();
   }
 
+  function handleStartAdd() {
+    setEditingEntry(undefined);
+    setIsFormOpen(true);
+  }
+
+  function handleEdit(entry: FlightEntry) {
+    setEditingEntry(entry);
+    setIsFormOpen(true);
+  }
+
+  function handleCancelForm() {
+    setEditingEntry(undefined);
+    setIsFormOpen(false);
+  }
+
   async function handleSubmit(entry: FlightEntry) {
     if (editingEntry?.id !== undefined) {
       await updateFlightEntry(db, editingEntry.id, entry);
-      setEditingEntry(undefined);
     } else {
       await addFlightEntry(db, entry);
     }
+    setEditingEntry(undefined);
+    setIsFormOpen(false);
     await reload();
     await triggerBackup();
   }
@@ -75,12 +95,48 @@ export default function App() {
   }
 
   return (
-    <main>
-      <h1>Pilot Logbook</h1>
-      <FlightEntryForm key={editingEntry?.id ?? "new"} initialValue={editingEntry} onSubmit={handleSubmit} />
-      <FlightEntryList entries={entries} onEdit={setEditingEntry} onDelete={handleDelete} />
-      <TotalsSummary entries={entries} />
-      <BackupSettings status={backupStatus} onConnect={handleConnect} onRestoreFile={handleRestoreFile} />
-    </main>
+    <div className="app-shell">
+      <Sidebar activeView={activeView} onSelectView={setActiveView} />
+      <main className="app-main">
+        {activeView === "logbook" && (
+          <section>
+            <div className="view-header">
+              <h1>Logbook</h1>
+              {!isFormOpen && (
+                <button type="button" className="add-flight-btn" onClick={handleStartAdd}>
+                  + Add Flight
+                </button>
+              )}
+            </div>
+            <StatCards entries={entries} />
+            {isFormOpen && (
+              <div className="add-flight-panel">
+                <FlightEntryForm key={editingEntry?.id ?? "new"} initialValue={editingEntry} onSubmit={handleSubmit} />
+                <button type="button" className="cancel-btn" onClick={handleCancelForm}>
+                  Cancel
+                </button>
+              </div>
+            )}
+            <FlightEntryList entries={entries} onEdit={handleEdit} onDelete={handleDelete} />
+          </section>
+        )}
+        {activeView === "totals" && (
+          <section>
+            <div className="view-header">
+              <h1>Totals</h1>
+            </div>
+            <TotalsSummary entries={entries} />
+          </section>
+        )}
+        {activeView === "backup" && (
+          <section>
+            <div className="view-header">
+              <h1>Backup</h1>
+            </div>
+            <BackupSettings status={backupStatus} onConnect={handleConnect} onRestoreFile={handleRestoreFile} />
+          </section>
+        )}
+      </main>
+    </div>
   );
 }
