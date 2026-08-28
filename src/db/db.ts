@@ -2,7 +2,7 @@ import Dexie, { Table } from "dexie";
 import type { FlightEntry } from "../types/flightEntry";
 
 export class LogbookDatabase extends Dexie {
-  flightEntries!: Table<FlightEntry, number>;
+  declare flightEntries: Table<FlightEntry, number>;
 
   constructor(name = "LogbookDatabase") {
     super(name);
