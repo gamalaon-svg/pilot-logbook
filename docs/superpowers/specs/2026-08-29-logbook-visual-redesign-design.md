@@ -71,8 +71,11 @@ linking need, no back-button requirement identified.
 - `App.tsx` restructured to render `Sidebar` + the active view's contents
   instead of one long stacked column.
 
-**No changes** to: `db/`, `backup/`, `types/`, `utils/` — none of the data
-layer is touched by this phase.
+**No changes** to: `db/`, `backup/`, `types/`. `utils/totals.ts` gets three
+new small aggregate functions (total minutes across all entries, total
+landings, minutes for a given year) to feed the stat cards — everything
+else, including the persistence/CRUD/CSV logic in `db/` and `backup/`, is
+untouched.
 
 ## Out of scope for this phase
 
