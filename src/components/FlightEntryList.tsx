@@ -13,38 +13,40 @@ export function FlightEntryList({ entries, onEdit, onDelete }: FlightEntryListPr
   }
 
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>From</th>
-          <th>To</th>
-          <th>Aircraft</th>
-          <th>Total time</th>
-          <th>Role</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {entries.map((entry) => (
-          <tr key={entry.id}>
-            <td>{entry.date}</td>
-            <td>{entry.departure}</td>
-            <td>{entry.arrival}</td>
-            <td>{entry.aircraftType}</td>
-            <td>{formatMinutes(entry.totalTimeMinutes)}</td>
-            <td>{entry.role}</td>
-            <td>
-              <button type="button" onClick={() => onEdit(entry)}>
-                Edit
-              </button>
-              <button type="button" onClick={() => entry.id !== undefined && onDelete(entry.id)}>
-                Delete
-              </button>
-            </td>
+    <div className="logbook-table-wrap">
+      <table className="logbook-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Aircraft</th>
+            <th>Total time</th>
+            <th>Role</th>
+            <th></th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {entries.map((entry) => (
+            <tr key={entry.id}>
+              <td>{entry.date}</td>
+              <td>{entry.departure}</td>
+              <td>{entry.arrival}</td>
+              <td>{entry.aircraftType}</td>
+              <td>{formatMinutes(entry.totalTimeMinutes)}</td>
+              <td>{entry.role}</td>
+              <td>
+                <button type="button" onClick={() => onEdit(entry)}>
+                  Edit
+                </button>
+                <button type="button" onClick={() => entry.id !== undefined && onDelete(entry.id)}>
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }

@@ -94,7 +94,7 @@ export function FlightEntryForm({ initialValue, onSubmit }: FlightEntryFormProps
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="flight-form">
       <label htmlFor="date">Date</label>
       <input id="date" type="text" value={form.date} onChange={handleChange("date")} />
 

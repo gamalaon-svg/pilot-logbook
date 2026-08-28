@@ -17,8 +17,7 @@ export function BackupSettings({ status, onConnect, onRestoreFile }: BackupSetti
   }
 
   return (
-    <section>
-      <h2>Backup</h2>
+    <section className="backup-settings">
       {!status.supported && <p>Backup requires Chrome or Edge on Windows.</p>}
       {status.supported && !status.connected && (
         <button type="button" onClick={onConnect}>
