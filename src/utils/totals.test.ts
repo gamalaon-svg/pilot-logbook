@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { totalMinutesByAircraftType, totalMinutesByRole, totalMinutesByYear } from "./totals";
+import {
+  totalMinutesByAircraftType,
+  totalMinutesByRole,
+  totalMinutesByYear,
+  sumTotalMinutes,
+  sumTotalLandings,
+  sumMinutesForYear
+} from "./totals";
 import type { FlightEntry } from "../types/flightEntry";
 
 function makeEntry(overrides: Partial<FlightEntry>): FlightEntry {
@@ -47,5 +54,18 @@ describe("totals", () => {
 
   it("returns an empty object for no entries", () => {
     expect(totalMinutesByAircraftType([])).toEqual({});
+  });
+
+  it("sums total minutes across all entries", () => {
+    expect(sumTotalMinutes(entries)).toBe(270);
+  });
+
+  it("sums total landings across all entries", () => {
+    expect(sumTotalLandings(entries)).toBe(3);
+  });
+
+  it("sums minutes for a specific year", () => {
+    expect(sumMinutesForYear(entries, 2026)).toBe(210);
+    expect(sumMinutesForYear(entries, 2025)).toBe(60);
   });
 });

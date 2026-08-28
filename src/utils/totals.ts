@@ -20,3 +20,15 @@ export function totalMinutesByRole(entries: FlightEntry[]): Record<string, numbe
 export function totalMinutesByYear(entries: FlightEntry[]): Record<string, number> {
   return sumByKey(entries, (entry) => entry.date.slice(0, 4));
 }
+
+export function sumTotalMinutes(entries: FlightEntry[]): number {
+  return entries.reduce((sum, entry) => sum + entry.totalTimeMinutes, 0);
+}
+
+export function sumTotalLandings(entries: FlightEntry[]): number {
+  return entries.reduce((sum, entry) => sum + entry.landingsDay + entry.landingsNight, 0);
+}
+
+export function sumMinutesForYear(entries: FlightEntry[], year: number): number {
+  return sumTotalMinutes(entries.filter((entry) => entry.date.startsWith(String(year))));
+}
