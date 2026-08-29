@@ -10,6 +10,7 @@ const sampleEntry: FlightEntry = {
   date: "2026-08-20",
   departure: "OMDB",
   arrival: "EGLL",
+  flightNumber: "EK0839",
   aircraftType: "B777",
   aircraftRegistration: "A6-EXAMPLE",
   blockOffTime: "08:00",

@@ -33,6 +33,7 @@ function emptyState(initial?: FlightEntry): FormState {
     date: initial?.date ?? "",
     departure: initial?.departure ?? "",
     arrival: initial?.arrival ?? "",
+    flightNumber: initial?.flightNumber ?? "",
     aircraftType: initial?.aircraftType ?? "",
     aircraftRegistration: initial?.aircraftRegistration ?? "",
     blockOffTime: initial?.blockOffTime ?? "",
@@ -70,6 +71,7 @@ export function FlightEntryForm({ initialValue, onSubmit }: FlightEntryFormProps
         date: form.date,
         departure: form.departure,
         arrival: form.arrival,
+        flightNumber: form.flightNumber.trim() || undefined,
         aircraftType: form.aircraftType,
         aircraftRegistration: form.aircraftRegistration,
         blockOffTime: form.blockOffTime,
@@ -103,6 +105,9 @@ export function FlightEntryForm({ initialValue, onSubmit }: FlightEntryFormProps
 
       <label htmlFor="arrival">Arrival</label>
       <input id="arrival" type="text" value={form.arrival} onChange={handleChange("arrival")} />
+
+      <label htmlFor="flightNumber">Flight number</label>
+      <input id="flightNumber" type="text" value={form.flightNumber ?? ""} onChange={handleChange("flightNumber")} />
 
       <label htmlFor="aircraftType">Aircraft type</label>
       <input id="aircraftType" type="text" value={form.aircraftType} onChange={handleChange("aircraftType")} />

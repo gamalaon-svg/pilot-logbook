@@ -10,6 +10,7 @@ const entries: FlightEntry[] = [
     date: "2026-08-20",
     departure: "OMDB",
     arrival: "EGLL",
+    flightNumber: "EK0839",
     aircraftType: "B777",
     aircraftRegistration: "A6-EXAMPLE",
     blockOffTime: "08:00",
@@ -33,6 +34,7 @@ describe("FlightEntryList", () => {
     render(<FlightEntryList entries={entries} onEdit={vi.fn()} onDelete={vi.fn()} />);
     expect(screen.getByText("OMDB")).toBeInTheDocument();
     expect(screen.getByText("EGLL")).toBeInTheDocument();
+    expect(screen.getByText("EK0839")).toBeInTheDocument();
     expect(screen.getByText("7:30")).toBeInTheDocument();
   });
 

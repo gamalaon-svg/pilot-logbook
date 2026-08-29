@@ -12,6 +12,7 @@ describe("FlightEntryForm", () => {
     await user.type(screen.getByLabelText(/date/i), "2026-08-20");
     await user.type(screen.getByLabelText(/departure/i), "OMDB");
     await user.type(screen.getByLabelText(/arrival/i), "EGLL");
+    await user.type(screen.getByLabelText(/flight number/i), "EK0839");
     await user.type(screen.getByLabelText(/aircraft type/i), "B777");
     await user.type(screen.getByLabelText(/registration/i), "A6-EXAMPLE");
     await user.type(screen.getByLabelText(/block off/i), "08:00");
@@ -32,6 +33,7 @@ describe("FlightEntryForm", () => {
         date: "2026-08-20",
         departure: "OMDB",
         arrival: "EGLL",
+        flightNumber: "EK0839",
         blockOffTime: "08:00",
         blockOnTime: "10:30",
         totalTimeMinutes: 150,

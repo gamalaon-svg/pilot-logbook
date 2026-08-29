@@ -4,6 +4,7 @@ const HEADER = [
   "date",
   "departure",
   "arrival",
+  "flightNumber",
   "aircraftType",
   "aircraftRegistration",
   "blockOffTime",
@@ -34,8 +35,8 @@ const NUMERIC_FIELDS = new Set<string>([
 
 export class CsvFormatError extends Error {}
 
-function csvField(value: string | number): string {
-  const str = String(value);
+function csvField(value: string | number | undefined): string {
+  const str = String(value ?? "");
   if (/["\n,]/.test(str)) {
     return `"${str.replace(/"/g, '""')}"`;
   }

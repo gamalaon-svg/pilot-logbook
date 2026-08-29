@@ -20,6 +20,7 @@ export function FlightEntryList({ entries, onEdit, onDelete }: FlightEntryListPr
             <th>Date</th>
             <th>From</th>
             <th>To</th>
+            <th>Flight #</th>
             <th>Aircraft</th>
             <th>Total time</th>
             <th>Role</th>
@@ -32,6 +33,7 @@ export function FlightEntryList({ entries, onEdit, onDelete }: FlightEntryListPr
               <td>{entry.date}</td>
               <td>{entry.departure}</td>
               <td>{entry.arrival}</td>
+              <td>{entry.flightNumber}</td>
               <td>{entry.aircraftType}</td>
               <td>{formatMinutes(entry.totalTimeMinutes)}</td>
               <td>{entry.role}</td>

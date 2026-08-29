@@ -6,6 +6,7 @@ const sampleEntry: FlightEntry = {
   date: "2026-08-20",
   departure: "OMDB",
   arrival: "EGLL",
+  flightNumber: "EK0839",
   aircraftType: "B777",
   aircraftRegistration: "A6-EXAMPLE",
   blockOffTime: "08:00",
@@ -28,10 +29,10 @@ describe("flightEntriesToCsv", () => {
     const csv = flightEntriesToCsv([sampleEntry]);
     const lines = csv.split("\n");
     expect(lines[0]).toBe(
-      "date,departure,arrival,aircraftType,aircraftRegistration,blockOffTime,blockOnTime,totalTimeMinutes,role,dayTimeMinutes,nightTimeMinutes,ifrTimeMinutes,vfrTimeMinutes,crossCountryTimeMinutes,landingsDay,landingsNight,approaches,remarks"
+      "date,departure,arrival,flightNumber,aircraftType,aircraftRegistration,blockOffTime,blockOnTime,totalTimeMinutes,role,dayTimeMinutes,nightTimeMinutes,ifrTimeMinutes,vfrTimeMinutes,crossCountryTimeMinutes,landingsDay,landingsNight,approaches,remarks"
     );
     expect(lines[1]).toBe(
-      "2026-08-20,OMDB,EGLL,B777,A6-EXAMPLE,08:00,15:30,450,PIC,450,0,450,0,450,1,0,ILS x1,Great flight"
+      "2026-08-20,OMDB,EGLL,EK0839,B777,A6-EXAMPLE,08:00,15:30,450,PIC,450,0,450,0,450,1,0,ILS x1,Great flight"
     );
   });
 
@@ -44,6 +45,14 @@ describe("flightEntriesToCsv", () => {
   it("returns just the header for an empty list", () => {
     const csv = flightEntriesToCsv([]);
     expect(csv.split("\n")).toHaveLength(1);
+  });
+
+  it("writes an empty field when flightNumber is not set", () => {
+    const { flightNumber, ...rest } = sampleEntry;
+    const csv = flightEntriesToCsv([rest as FlightEntry]);
+    expect(csv.split("\n")[1]).toBe(
+      "2026-08-20,OMDB,EGLL,,B777,A6-EXAMPLE,08:00,15:30,450,PIC,450,0,450,0,450,1,0,ILS x1,Great flight"
+    );
   });
 });
 

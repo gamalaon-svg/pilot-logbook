@@ -5,6 +5,7 @@ export interface FlightEntry {
   date: string; // ISO "YYYY-MM-DD"
   departure: string;
   arrival: string;
+  flightNumber?: string;
   aircraftType: string;
   aircraftRegistration: string;
   blockOffTime: string; // "HH:MM" 24-hour
