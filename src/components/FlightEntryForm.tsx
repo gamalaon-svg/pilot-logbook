@@ -33,6 +33,7 @@ function emptyState(initial?: FlightEntry): FormState {
     date: initial?.date ?? "",
     departure: initial?.departure ?? "",
     arrival: initial?.arrival ?? "",
+    airline: initial?.airline ?? "",
     flightNumber: initial?.flightNumber ?? "",
     aircraftType: initial?.aircraftType ?? "",
     aircraftRegistration: initial?.aircraftRegistration ?? "",
@@ -47,7 +48,8 @@ function emptyState(initial?: FlightEntry): FormState {
     landingsDay: initial ? String(initial.landingsDay) : "",
     landingsNight: initial ? String(initial.landingsNight) : "",
     approaches: initial?.approaches ?? "",
-    remarks: initial?.remarks ?? ""
+    remarks: initial?.remarks ?? "",
+    crew: initial?.crew ?? ""
   };
 }
 
@@ -71,6 +73,7 @@ export function FlightEntryForm({ initialValue, onSubmit }: FlightEntryFormProps
         date: form.date,
         departure: form.departure,
         arrival: form.arrival,
+        airline: (form.airline ?? "").trim() || undefined,
         flightNumber: (form.flightNumber ?? "").trim() || undefined,
         aircraftType: form.aircraftType,
         aircraftRegistration: form.aircraftRegistration,
@@ -86,7 +89,8 @@ export function FlightEntryForm({ initialValue, onSubmit }: FlightEntryFormProps
         landingsDay: Number(form.landingsDay) || 0,
         landingsNight: Number(form.landingsNight) || 0,
         approaches: form.approaches,
-        remarks: form.remarks
+        remarks: form.remarks,
+        crew: (form.crew ?? "").trim() || undefined
       };
       onSubmit(entry);
       setForm(emptyState());
@@ -105,6 +109,9 @@ export function FlightEntryForm({ initialValue, onSubmit }: FlightEntryFormProps
 
       <label htmlFor="arrival">Arrival</label>
       <input id="arrival" type="text" value={form.arrival} onChange={handleChange("arrival")} />
+
+      <label htmlFor="airline">Airline</label>
+      <input id="airline" type="text" value={form.airline ?? ""} onChange={handleChange("airline")} />
 
       <label htmlFor="flightNumber">Flight number</label>
       <input id="flightNumber" type="text" value={form.flightNumber ?? ""} onChange={handleChange("flightNumber")} />
@@ -171,6 +178,9 @@ export function FlightEntryForm({ initialValue, onSubmit }: FlightEntryFormProps
 
       <label htmlFor="remarks">Remarks</label>
       <input id="remarks" type="text" value={form.remarks} onChange={handleChange("remarks")} />
+
+      <label htmlFor="crew">Crew</label>
+      <input id="crew" type="text" value={form.crew ?? ""} onChange={handleChange("crew")} />
 
       {error && <p role="alert">{error}</p>}
 

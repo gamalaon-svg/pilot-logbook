@@ -61,7 +61,9 @@ describe("mapEmiratesRow", () => {
     expect(entry.date).toBe("2011-05-26");
     expect(entry.departure).toBe("DXB");
     expect(entry.arrival).toBe("BAH");
-    expect(entry.flightNumber).toBe("0839");
+    expect(entry.airline).toBe("Emirates");
+    expect(entry.flightNumber).toBe("EK0839");
+    expect(entry.crew).toBe("AbdulhamidAllenjawi(143824-CA), GamalOun(406191-FO), TalaTalah(313784-FO)");
     expect(entry.aircraftType).toBe("A330");
     expect(entry.role).toBe("SIC");
     expect(entry.totalTimeMinutes).toBe(71);

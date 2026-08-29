@@ -5,6 +5,7 @@ export interface FlightEntry {
   date: string; // ISO "YYYY-MM-DD"
   departure: string;
   arrival: string;
+  airline?: string;
   flightNumber?: string;
   aircraftType: string;
   aircraftRegistration: string;
@@ -21,6 +22,7 @@ export interface FlightEntry {
   landingsNight: number;
   approaches: string;
   remarks: string;
+  crew?: string;
 }
 
 export const CREW_ROLES: CrewRole[] = ["PIC", "SIC", "Dual", "Relief"];

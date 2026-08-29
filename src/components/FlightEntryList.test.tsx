@@ -10,6 +10,7 @@ const entries: FlightEntry[] = [
     date: "2026-08-20",
     departure: "OMDB",
     arrival: "EGLL",
+    airline: "Emirates",
     flightNumber: "EK0839",
     aircraftType: "B777",
     aircraftRegistration: "A6-EXAMPLE",
@@ -25,7 +26,8 @@ const entries: FlightEntry[] = [
     landingsDay: 1,
     landingsNight: 0,
     approaches: "ILS x1",
-    remarks: ""
+    remarks: "",
+    crew: "John Smith (CA)"
   }
 ];
 
@@ -36,6 +38,14 @@ describe("FlightEntryList", () => {
     expect(screen.getByText("EGLL")).toBeInTheDocument();
     expect(screen.getByText("EK0839")).toBeInTheDocument();
     expect(screen.getByText("7:30")).toBeInTheDocument();
+    expect(screen.getByText("John Smith (CA)")).toBeInTheDocument();
+    expect(screen.getByAltText("Emirates")).toBeInTheDocument();
+  });
+
+  it("falls back to airline text when no logo is known", () => {
+    const unknownAirlineEntries: FlightEntry[] = [{ ...entries[0], airline: "Some Other Airline" }];
+    render(<FlightEntryList entries={unknownAirlineEntries} onEdit={vi.fn()} onDelete={vi.fn()} />);
+    expect(screen.getByText("Some Other Airline")).toBeInTheDocument();
   });
 
   it("calls onEdit when the edit button is clicked", async () => {

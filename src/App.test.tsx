@@ -72,6 +72,7 @@ describe("App", () => {
     };
     vi.mocked(prepareEmiratesImport).mockResolvedValue({
       newEntries: [newEntry],
+      entriesToUpdate: [],
       duplicateCount: 0,
       totalInFile: 1
     });
@@ -86,7 +87,7 @@ describe("App", () => {
     await user.upload(input, file);
 
     expect(prepareEmiratesImport).toHaveBeenCalled();
-    expect(commitEmiratesImport).toHaveBeenCalledWith(expect.anything(), [newEntry]);
+    expect(commitEmiratesImport).toHaveBeenCalledWith(expect.anything(), [newEntry], []);
 
     vi.restoreAllMocks();
   });

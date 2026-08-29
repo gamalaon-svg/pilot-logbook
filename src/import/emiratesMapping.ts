@@ -79,7 +79,8 @@ export function mapEmiratesRow(row: RawEmiratesRow, options: MapRowOptions): Fli
     date,
     departure: row.from,
     arrival: row.to,
-    flightNumber: row.flightNumber || undefined,
+    airline: "Emirates",
+    flightNumber: row.flightNumber ? `EK${row.flightNumber}` : undefined,
     aircraftType: mapAircraftType(row.aircraftType),
     aircraftRegistration: row.aircraftRegistration,
     blockOffTime: row.atd,
@@ -94,6 +95,7 @@ export function mapEmiratesRow(row: RawEmiratesRow, options: MapRowOptions): Fli
     landingsDay: landed && !landedAtNight ? 1 : 0,
     landingsNight: landedAtNight ? 1 : 0,
     approaches: "",
-    remarks: ""
+    remarks: "",
+    crew: row.crewName ? row.crewName.split(",").join(", ") : undefined
   };
 }

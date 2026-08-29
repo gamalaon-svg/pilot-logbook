@@ -1,5 +1,6 @@
 import { FlightEntry } from "../types/flightEntry";
 import { formatMinutes } from "../utils/time";
+import { getAirlineLogoUrl } from "./airlineLogos";
 
 interface FlightEntryListProps {
   entries: FlightEntry[];
@@ -17,6 +18,7 @@ export function FlightEntryList({ entries, onEdit, onDelete }: FlightEntryListPr
       <table className="logbook-table">
         <thead>
           <tr>
+            <th>Airline</th>
             <th>Date</th>
             <th>From</th>
             <th>To</th>
@@ -24,29 +26,37 @@ export function FlightEntryList({ entries, onEdit, onDelete }: FlightEntryListPr
             <th>Aircraft</th>
             <th>Total time</th>
             <th>Role</th>
+            <th>Crew</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          {entries.map((entry) => (
-            <tr key={entry.id}>
-              <td>{entry.date}</td>
-              <td>{entry.departure}</td>
-              <td>{entry.arrival}</td>
-              <td>{entry.flightNumber}</td>
-              <td>{entry.aircraftType}</td>
-              <td>{formatMinutes(entry.totalTimeMinutes)}</td>
-              <td>{entry.role}</td>
-              <td>
-                <button type="button" onClick={() => onEdit(entry)}>
-                  Edit
-                </button>
-                <button type="button" onClick={() => entry.id !== undefined && onDelete(entry.id)}>
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
+          {entries.map((entry) => {
+            const logoUrl = getAirlineLogoUrl(entry.airline);
+            return (
+              <tr key={entry.id}>
+                <td className="logbook-table-airline">
+                  {logoUrl ? <img src={logoUrl} alt={entry.airline} className="airline-logo" /> : entry.airline}
+                </td>
+                <td>{entry.date}</td>
+                <td>{entry.departure}</td>
+                <td>{entry.arrival}</td>
+                <td>{entry.flightNumber}</td>
+                <td>{entry.aircraftType}</td>
+                <td>{formatMinutes(entry.totalTimeMinutes)}</td>
+                <td>{entry.role}</td>
+                <td className="logbook-table-crew">{entry.crew}</td>
+                <td>
+                  <button type="button" onClick={() => onEdit(entry)}>
+                    Edit
+                  </button>
+                  <button type="button" onClick={() => entry.id !== undefined && onDelete(entry.id)}>
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

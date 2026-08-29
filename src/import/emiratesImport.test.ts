@@ -2,7 +2,7 @@
 import { describe, expect, it } from "vitest";
 import * as XLSX from "xlsx";
 import { LogbookDatabase } from "../db/db";
-import { getAllFlightEntries } from "../db/flightEntries";
+import { addFlightEntry, getAllFlightEntries } from "../db/flightEntries";
 import { commitEmiratesImport, prepareEmiratesImport } from "./emiratesImport";
 
 function makeEmiratesFile(rows: unknown[][]): File {
@@ -85,5 +85,57 @@ describe("prepareEmiratesImport / commitEmiratesImport", () => {
 
     const stored = await getAllFlightEntries(db);
     expect(stored).toHaveLength(1);
+  });
+
+  it("backfills crew/airline/flightNumber onto an entry imported before those fields existed", async () => {
+    const db = new LogbookDatabase(`emirates-import-test-db-${Math.random()}`);
+    await db.open();
+    const preExistingId = await addFlightEntry(db, {
+      date: "2011-05-26",
+      departure: "DXB",
+      arrival: "BAH",
+      aircraftType: "A330",
+      aircraftRegistration: "A6EAR",
+      blockOffTime: "12:28",
+      blockOnTime: "13:39",
+      totalTimeMinutes: 71,
+      role: "SIC",
+      dayTimeMinutes: 71,
+      nightTimeMinutes: 0,
+      ifrTimeMinutes: 71,
+      vfrTimeMinutes: 0,
+      crossCountryTimeMinutes: 71,
+      landingsDay: 0,
+      landingsNight: 0,
+      approaches: "",
+      remarks: ""
+    });
+    const file = makeEmiratesFile([sampleRow]);
+
+    const preview = await prepareEmiratesImport(db, file, "406191");
+    expect(preview.newEntries).toHaveLength(0);
+    expect(preview.duplicateCount).toBe(0);
+    expect(preview.entriesToUpdate).toEqual([
+      {
+        id: preExistingId,
+        updates: {
+          crew: "AbdulhamidAllenjawi(143824-CA), GamalOun(406191-FO), TalaTalah(313784-FO)",
+          airline: "Emirates",
+          flightNumber: "EK0839"
+        }
+      }
+    ]);
+
+    await commitEmiratesImport(db, preview.newEntries, preview.entriesToUpdate);
+
+    const stored = await getAllFlightEntries(db);
+    expect(stored).toHaveLength(1);
+    expect(stored[0]).toMatchObject({
+      id: preExistingId,
+      crew: "AbdulhamidAllenjawi(143824-CA), GamalOun(406191-FO), TalaTalah(313784-FO)",
+      airline: "Emirates",
+      flightNumber: "EK0839",
+      role: "SIC"
+    });
   });
 });

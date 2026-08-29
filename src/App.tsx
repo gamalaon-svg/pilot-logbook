@@ -111,17 +111,20 @@ export default function App() {
       window.alert(`Could not read Emirates report: ${(err as Error).message}`);
       return;
     }
-    if (preview.newEntries.length === 0) {
+    if (preview.newEntries.length === 0 && preview.entriesToUpdate.length === 0) {
       window.alert(`No new flights found. ${preview.totalInFile} flights in file, all already in your logbook.`);
       return;
     }
-    const confirmed = window.confirm(
-      `${preview.totalInFile} flights found in file, ${preview.newEntries.length} new, ${preview.duplicateCount} already in your logbook. Add the ${preview.newEntries.length} new flights?`
-    );
+    const parts = [`${preview.totalInFile} flights found in file`, `${preview.newEntries.length} new`];
+    if (preview.entriesToUpdate.length > 0) {
+      parts.push(`${preview.entriesToUpdate.length} to update with crew/airline info`);
+    }
+    parts.push(`${preview.duplicateCount} already in your logbook`);
+    const confirmed = window.confirm(`${parts.join(", ")}. Continue?`);
     if (!confirmed) {
       return;
     }
-    await commitEmiratesImport(db, preview.newEntries);
+    await commitEmiratesImport(db, preview.newEntries, preview.entriesToUpdate);
     await reload();
     await triggerBackup();
   }

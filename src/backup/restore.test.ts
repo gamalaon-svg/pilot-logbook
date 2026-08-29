@@ -10,6 +10,7 @@ const sampleEntry: FlightEntry = {
   date: "2026-08-20",
   departure: "OMDB",
   arrival: "EGLL",
+  airline: "Emirates",
   flightNumber: "EK0839",
   aircraftType: "B777",
   aircraftRegistration: "A6-EXAMPLE",
@@ -25,7 +26,8 @@ const sampleEntry: FlightEntry = {
   landingsDay: 1,
   landingsNight: 0,
   approaches: "",
-  remarks: ""
+  remarks: "",
+  crew: "John Smith (CA)"
 };
 
 describe("readAndParseBackupFile", () => {

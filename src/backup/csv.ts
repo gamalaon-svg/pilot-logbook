@@ -4,6 +4,7 @@ const HEADER = [
   "date",
   "departure",
   "arrival",
+  "airline",
   "flightNumber",
   "aircraftType",
   "aircraftRegistration",
@@ -19,7 +20,8 @@ const HEADER = [
   "landingsDay",
   "landingsNight",
   "approaches",
-  "remarks"
+  "remarks",
+  "crew"
 ] as const satisfies readonly (keyof FlightEntry)[];
 
 const NUMERIC_FIELDS = new Set<string>([

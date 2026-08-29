@@ -12,6 +12,7 @@ describe("FlightEntryForm", () => {
     await user.type(screen.getByLabelText(/date/i), "2026-08-20");
     await user.type(screen.getByLabelText(/departure/i), "OMDB");
     await user.type(screen.getByLabelText(/arrival/i), "EGLL");
+    await user.type(screen.getByLabelText(/^airline$/i), "Emirates");
     await user.type(screen.getByLabelText(/flight number/i), "EK0839");
     await user.type(screen.getByLabelText(/aircraft type/i), "B777");
     await user.type(screen.getByLabelText(/registration/i), "A6-EXAMPLE");
@@ -25,6 +26,7 @@ describe("FlightEntryForm", () => {
     await user.type(screen.getByLabelText(/cross-country/i), "150");
     await user.type(screen.getByLabelText(/day landings/i), "1");
     await user.type(screen.getByLabelText(/night landings/i), "0");
+    await user.type(screen.getByLabelText(/^crew$/i), "John Smith (CA)");
 
     await user.click(screen.getByRole("button", { name: /save/i }));
 
@@ -33,11 +35,13 @@ describe("FlightEntryForm", () => {
         date: "2026-08-20",
         departure: "OMDB",
         arrival: "EGLL",
+        airline: "Emirates",
         flightNumber: "EK0839",
         blockOffTime: "08:00",
         blockOnTime: "10:30",
         totalTimeMinutes: 150,
-        role: "PIC"
+        role: "PIC",
+        crew: "John Smith (CA)"
       })
     );
   });
