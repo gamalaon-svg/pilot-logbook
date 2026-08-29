@@ -71,7 +71,7 @@ export function FlightEntryForm({ initialValue, onSubmit }: FlightEntryFormProps
         date: form.date,
         departure: form.departure,
         arrival: form.arrival,
-        flightNumber: form.flightNumber.trim() || undefined,
+        flightNumber: (form.flightNumber ?? "").trim() || undefined,
         aircraftType: form.aircraftType,
         aircraftRegistration: form.aircraftRegistration,
         blockOffTime: form.blockOffTime,
