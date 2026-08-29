@@ -3,11 +3,16 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BackupSettings } from "./BackupSettings";
 
+const noop = {
+  onConnect: vi.fn(),
+  onRestoreFile: vi.fn(),
+  onExport: vi.fn(),
+  onEmiratesImportFile: vi.fn()
+};
+
 describe("BackupSettings", () => {
   it("shows an unsupported message when backup isn't supported", () => {
-    render(
-      <BackupSettings status={{ supported: false, connected: false }} onConnect={vi.fn()} onRestoreFile={vi.fn()} />
-    );
+    render(<BackupSettings status={{ supported: false, connected: false }} {...noop} />);
     expect(screen.getByText(/requires chrome or edge/i)).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /connect backup folder/i })).not.toBeInTheDocument();
   });
@@ -15,9 +20,7 @@ describe("BackupSettings", () => {
   it("shows a connect button when supported but not connected", async () => {
     const user = userEvent.setup();
     const onConnect = vi.fn();
-    render(
-      <BackupSettings status={{ supported: true, connected: false }} onConnect={onConnect} onRestoreFile={vi.fn()} />
-    );
+    render(<BackupSettings status={{ supported: true, connected: false }} {...noop} onConnect={onConnect} />);
     await user.click(screen.getByRole("button", { name: /connect backup folder/i }));
     expect(onConnect).toHaveBeenCalled();
   });
@@ -31,8 +34,7 @@ describe("BackupSettings", () => {
           folderName: "Logbook Backups",
           lastBackupAt: "2026-08-29T10:00:00.000Z"
         }}
-        onConnect={vi.fn()}
-        onRestoreFile={vi.fn()}
+        {...noop}
       />
     );
     expect(screen.getByText(/Logbook Backups/)).toBeInTheDocument();
@@ -45,8 +47,8 @@ describe("BackupSettings", () => {
     render(
       <BackupSettings
         status={{ supported: true, connected: true, folderName: "Logbook Backups", lastBackupError: "Reconnect needed" }}
+        {...noop}
         onConnect={onConnect}
-        onRestoreFile={vi.fn()}
       />
     );
     expect(screen.getByText("Reconnect needed")).toBeInTheDocument();
@@ -54,15 +56,33 @@ describe("BackupSettings", () => {
     expect(onConnect).toHaveBeenCalled();
   });
 
-  it("calls onRestoreFile with the selected file", async () => {
+  it("calls onExport when the Export button is clicked", async () => {
+    const user = userEvent.setup();
+    const onExport = vi.fn();
+    render(<BackupSettings status={{ supported: true, connected: false }} {...noop} onExport={onExport} />);
+    await user.click(screen.getByRole("button", { name: /^export$/i }));
+    expect(onExport).toHaveBeenCalled();
+  });
+
+  it("calls onRestoreFile with the selected file for Import", async () => {
     const user = userEvent.setup();
     const onRestoreFile = vi.fn();
-    render(
-      <BackupSettings status={{ supported: true, connected: false }} onConnect={vi.fn()} onRestoreFile={onRestoreFile} />
-    );
+    render(<BackupSettings status={{ supported: true, connected: false }} {...noop} onRestoreFile={onRestoreFile} />);
     const file = new File(["date,departure"], "backup.csv", { type: "text/csv" });
-    const input = screen.getByLabelText(/restore from backup/i);
+    const input = screen.getByLabelText(/^import$/i);
     await user.upload(input, file);
     expect(onRestoreFile).toHaveBeenCalledWith(file);
+  });
+
+  it("calls onEmiratesImportFile with the selected file", async () => {
+    const user = userEvent.setup();
+    const onEmiratesImportFile = vi.fn();
+    render(
+      <BackupSettings status={{ supported: true, connected: false }} {...noop} onEmiratesImportFile={onEmiratesImportFile} />
+    );
+    const file = new File(["dummy"], "CrewLogReports.xlsx");
+    const input = screen.getByLabelText(/import emirates report/i);
+    await user.upload(input, file);
+    expect(onEmiratesImportFile).toHaveBeenCalledWith(file);
   });
 });

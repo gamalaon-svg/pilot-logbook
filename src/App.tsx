@@ -9,6 +9,8 @@ import { Sidebar, type ViewName } from "./components/Sidebar";
 import { StatCards } from "./components/StatCards";
 import { connectBackupFolder, getBackupStatus, writeBackup, type BackupStatus } from "./backup/backupWriter";
 import { readAndParseBackupFile, replaceAllFlightEntries } from "./backup/restore";
+import { flightEntriesToCsv } from "./backup/csv";
+import { downloadCsv } from "./backup/downloadCsv";
 import type { FlightEntry } from "./types/flightEntry";
 
 const INITIAL_BACKUP_STATUS: BackupStatus = { supported: false, connected: false };
@@ -94,6 +96,11 @@ export default function App() {
     await reload();
   }
 
+  function handleExport() {
+    const csv = flightEntriesToCsv(entries);
+    downloadCsv(`logbook-export-${new Date().toISOString().slice(0, 10)}.csv`, csv);
+  }
+
   return (
     <div className="app-shell">
       <Sidebar activeView={activeView} onSelectView={setActiveView} />
@@ -133,7 +140,13 @@ export default function App() {
             <div className="view-header">
               <h1>Backup</h1>
             </div>
-            <BackupSettings status={backupStatus} onConnect={handleConnect} onRestoreFile={handleRestoreFile} />
+            <BackupSettings
+              status={backupStatus}
+              onConnect={handleConnect}
+              onRestoreFile={handleRestoreFile}
+              onExport={handleExport}
+              onEmiratesImportFile={() => {}}
+            />
           </section>
         )}
       </main>

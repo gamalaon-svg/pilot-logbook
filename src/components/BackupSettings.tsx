@@ -5,13 +5,29 @@ interface BackupSettingsProps {
   status: BackupStatus;
   onConnect: () => void;
   onRestoreFile: (file: File) => void;
+  onExport: () => void;
+  onEmiratesImportFile: (file: File) => void;
 }
 
-export function BackupSettings({ status, onConnect, onRestoreFile }: BackupSettingsProps) {
+export function BackupSettings({
+  status,
+  onConnect,
+  onRestoreFile,
+  onExport,
+  onEmiratesImportFile
+}: BackupSettingsProps) {
   function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (file) {
       onRestoreFile(file);
+    }
+    event.target.value = "";
+  }
+
+  function handleEmiratesFileChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (file) {
+      onEmiratesImportFile(file);
     }
     event.target.value = "";
   }
@@ -39,8 +55,13 @@ export function BackupSettings({ status, onConnect, onRestoreFile }: BackupSetti
           )}
         </div>
       )}
-      <label htmlFor="restoreFile">Restore from backup</label>
+      <button type="button" onClick={onExport}>
+        Export
+      </button>
+      <label htmlFor="restoreFile">Import</label>
       <input id="restoreFile" type="file" accept=".csv" onChange={handleFileChange} />
+      <label htmlFor="emiratesImportFile">Import Emirates report</label>
+      <input id="emiratesImportFile" type="file" accept=".xlsx" onChange={handleEmiratesFileChange} />
     </section>
   );
 }

@@ -42,6 +42,6 @@ describe("App", () => {
     const user = userEvent.setup();
     render(<App />);
     await user.click(screen.getByRole("button", { name: "Backup" }));
-    expect(await screen.findByLabelText(/restore from backup/i)).toBeInTheDocument();
+    expect(await screen.findByLabelText(/^import$/i)).toBeInTheDocument();
   });
 });
