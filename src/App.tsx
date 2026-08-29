@@ -11,9 +11,11 @@ import { connectBackupFolder, getBackupStatus, writeBackup, type BackupStatus } 
 import { readAndParseBackupFile, replaceAllFlightEntries } from "./backup/restore";
 import { flightEntriesToCsv } from "./backup/csv";
 import { downloadCsv } from "./backup/downloadCsv";
+import { commitEmiratesImport, prepareEmiratesImport } from "./import/emiratesImport";
 import type { FlightEntry } from "./types/flightEntry";
 
 const INITIAL_BACKUP_STATUS: BackupStatus = { supported: false, connected: false };
+const EMIRATES_PILOT_LICENSE_NUMBER = "406191";
 
 export default function App() {
   const [entries, setEntries] = useState<FlightEntry[]>([]);
@@ -101,6 +103,29 @@ export default function App() {
     downloadCsv(`logbook-export-${new Date().toISOString().slice(0, 10)}.csv`, csv);
   }
 
+  async function handleEmiratesImportFile(file: File) {
+    let preview: Awaited<ReturnType<typeof prepareEmiratesImport>>;
+    try {
+      preview = await prepareEmiratesImport(db, file, EMIRATES_PILOT_LICENSE_NUMBER);
+    } catch (err) {
+      window.alert(`Could not read Emirates report: ${(err as Error).message}`);
+      return;
+    }
+    if (preview.newEntries.length === 0) {
+      window.alert(`No new flights found. ${preview.totalInFile} flights in file, all already in your logbook.`);
+      return;
+    }
+    const confirmed = window.confirm(
+      `${preview.totalInFile} flights found in file, ${preview.newEntries.length} new, ${preview.duplicateCount} already in your logbook. Add the ${preview.newEntries.length} new flights?`
+    );
+    if (!confirmed) {
+      return;
+    }
+    await commitEmiratesImport(db, preview.newEntries);
+    await reload();
+    await triggerBackup();
+  }
+
   return (
     <div className="app-shell">
       <Sidebar activeView={activeView} onSelectView={setActiveView} />
@@ -145,7 +170,7 @@ export default function App() {
               onConnect={handleConnect}
               onRestoreFile={handleRestoreFile}
               onExport={handleExport}
-              onEmiratesImportFile={() => {}}
+              onEmiratesImportFile={handleEmiratesImportFile}
             />
           </section>
         )}
