@@ -34,34 +34,44 @@ export function BackupSettings({
 
   return (
     <section className="backup-settings">
-      {!status.supported && <p>Backup requires Chrome or Edge on Windows.</p>}
-      {status.supported && !status.connected && (
-        <button type="button" onClick={onConnect}>
-          Connect backup folder
+      <div className="backup-row">
+        {!status.supported && <p>Backup requires Chrome or Edge on Windows.</p>}
+        {status.supported && !status.connected && (
+          <button type="button" className="btn" onClick={onConnect}>
+            Connect backup folder
+          </button>
+        )}
+        {status.supported && status.connected && (
+          <div>
+            <p>Backing up to: {status.folderName}</p>
+            {status.lastBackupError ? (
+              <div>
+                <p role="alert">{status.lastBackupError}</p>
+                <button type="button" className="btn" onClick={onConnect}>
+                  Reconnect folder
+                </button>
+              </div>
+            ) : (
+              status.lastBackupAt && <p>Last backup: {status.lastBackupAt}</p>
+            )}
+          </div>
+        )}
+      </div>
+
+      <div className="backup-row">
+        <span className="label">CSV backup</span>
+        <button type="button" className="btn" onClick={onExport}>
+          Export
         </button>
-      )}
-      {status.supported && status.connected && (
-        <div>
-          <p>Backing up to: {status.folderName}</p>
-          {status.lastBackupError ? (
-            <div>
-              <p role="alert">{status.lastBackupError}</p>
-              <button type="button" onClick={onConnect}>
-                Reconnect folder
-              </button>
-            </div>
-          ) : (
-            status.lastBackupAt && <p>Last backup: {status.lastBackupAt}</p>
-          )}
-        </div>
-      )}
-      <button type="button" onClick={onExport}>
-        Export
-      </button>
-      <label htmlFor="restoreFile">Import</label>
-      <input id="restoreFile" type="file" accept=".csv" onChange={handleFileChange} />
-      <label htmlFor="emiratesImportFile">Import Emirates report</label>
-      <input id="emiratesImportFile" type="file" accept=".xlsx" onChange={handleEmiratesFileChange} />
+        <label htmlFor="restoreFile">Import</label>
+        <input id="restoreFile" type="file" accept=".csv" onChange={handleFileChange} />
+      </div>
+
+      <div className="backup-row">
+        <span className="label">Emirates crew portal</span>
+        <label htmlFor="emiratesImportFile">Import Emirates report</label>
+        <input id="emiratesImportFile" type="file" accept=".xlsx" onChange={handleEmiratesFileChange} />
+      </div>
     </section>
   );
 }

@@ -82,6 +82,7 @@ body {
   color: var(--navy);
 }
 
+.btn,
 .add-flight-btn,
 .cancel-btn,
 .flight-form button[type="submit"] {
@@ -259,6 +260,36 @@ body {
   border-radius: 8px;
   padding: 16px;
   max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.backup-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.backup-row .label {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.backup-row label {
+  font-size: 12px;
+  color: var(--text);
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.backup-row input[type="file"] {
+  font-size: 12px;
+  max-width: 100%;
 }
 
 @media (max-width: 700px) {
