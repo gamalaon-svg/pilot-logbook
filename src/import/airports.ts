@@ -5,7 +5,7 @@ export interface Coordinates {
   longitude: number;
 }
 
-const AIRPORTS = airportsData as Record<string, [number, number]>;
+const AIRPORTS = airportsData as unknown as Record<string, [number, number]>;
 
 export function getAirportCoordinates(iataCode: string): Coordinates | undefined {
   const entry = AIRPORTS[iataCode];
